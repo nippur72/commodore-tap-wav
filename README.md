@@ -17,7 +17,7 @@ npm i -g commodore-tap-wav
 
 ```
 tap2wav -i hello.tap -o hello.wav
-waw2wav -i hello.wav -o hello1.tap
+waw2tap -i hello.wav -o hello1.tap
 ```
 
 
