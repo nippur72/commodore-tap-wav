@@ -58,8 +58,10 @@ function tap2wav(tapfile, samplerate, clock, invert) {
             i+=3;
             nsamples = (cycles * samplerate) / clock;
         }
-        for(let t=0;t<nsamples/2;t++) samples.push(volume);
-        for(let t=0;t<nsamples/2;t++) samples.push(-volume);
+        for(let t=0;t<nsamples;t++) {
+            if(t<nsamples/2) samples.push(volume);
+            else             samples.push(-volume);
+        }
     }
     return samples;
 }
