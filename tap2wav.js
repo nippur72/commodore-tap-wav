@@ -47,7 +47,7 @@ function tap2wav(tapfile, samplerate, clock, invert) {
         if(byte !== 0) {
             // version 0 pulse
             // pulse length (in seconds) = (8 * data byte) / (clock cycles)
-            nsamples = (8 * byte * samplerate) / clock;
+            nsamples = Math.round((8 * byte * samplerate) / clock);
         }
         else {
             // version 1 pulse
@@ -56,7 +56,7 @@ function tap2wav(tapfile, samplerate, clock, invert) {
                 (data[i+2] << 8 )  |
                 (data[i+3] << 16)  ;
             i+=3;
-            nsamples = (cycles * samplerate) / clock;
+            Math.round(nsamples = (cycles * samplerate) / clock);
         }
         for(let t=0;t<nsamples;t++) {
             if(t<nsamples/2) samples.push(volume);

@@ -1,6 +1,6 @@
 {
   "name": "commodore-tap-wav",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Utility for encoding/decoding WAV files into TAP files for the Commodore Computers (C64, VIC20 ecc..).",
   "main": "tap2wav.js",
   "dependencies": {

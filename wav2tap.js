@@ -51,6 +51,8 @@ function wav2data(samples, samplerate, clock) {
 
     let counter = 0;
     for(let i=0;i<samples.length-1;i++) {
+        counter++;
+
         // raising edge detect
         if(samples[i]<0 && samples[i+1]>=0) {
             let taplen = Math.round(((counter/samplerate) * clock) / 8);
@@ -66,7 +68,6 @@ function wav2data(samples, samplerate, clock) {
             }
             counter = 0;
         }
-        else counter++;
     }
     return data;
 }
