@@ -5,6 +5,8 @@ Utility for encoding/decoding WAV files into TAP files for the Commodore Compute
 `wav2tap` takes a .WAV file and produces a .TAP file.
 `tap2wav` does the opposite, takes a .TAP file and generates a .WAV file.
 
+`tapstat` displays how many times a pulse occurs in a .TAP file
+
 # Installation
 
 You must have [Node.js](https://nodejs.org) installed. From the command prompt:
@@ -18,6 +20,8 @@ npm i -g commodore-tap-wav
 ```
 tap2wav -i hello.tap -o hello.wav
 waw2tap -i hello.wav -o hello1.tap
+
+tapstat -i hello.tap
 ```
 
 
