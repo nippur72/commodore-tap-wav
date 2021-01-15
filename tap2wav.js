@@ -4,60 +4,20 @@ const fs = require('fs');
 const WavEncoder = require("wav-encoder");
 const parseOptions = require("./parseOptions");
 const targetClock = require("./targetClock");
-
-// extract the data block from a V1 tap file
-// returns the data block array
-// throws if the file isn't a V1 TAP C64 tap file
-//
-function extract_data(tapfile) {
-    let signature = [];
-    for(let t=0;t<0x000C;t++) signature.push(String.fromCharCode(tapfile[t]));
-    signature = signature.join("");
-    if(signature != "C64-TAPE-RAW") throw `invalid signature "${signature}"`;
-
-    let version = tapfile[0xC];
-    if(version > 1) throw `invalid version ${version}`;
-
-    let size =
-        (tapfile[0x10] << 0)  |
-        (tapfile[0x11] << 8)  |
-        (tapfile[0x12] << 16) |
-        (tapfile[0x13] << 24);
-
-    tapdata = tapfile.slice(0x14);
-
-    if(tapdata.length != size) throw `size doesn't match ${size} != ${tapdata.length}`;
-    return tapdata;
-}
+const { getTapData, tapData2Cycles } = require("./tap");
 
 // turns the TAP data block into samples at the desideres samplerate
 // returns the array of float samples
 //
 function tap2wav(tapfile, samplerate, clock, invert) {
-    let data = extract_data(tapfile);
+    let data = getTapData(tapfile);
+    let cycles = tapData2Cycles(data);
 
     let samples = [];
-
     let volume = (invert === true) ? -0.75 : 0.75;
 
-    for(let i=0;i<data.length;i++) {
-        let byte = data[i];
-        let nsamples = 0;
-
-        if(byte !== 0) {
-            // version 0 pulse
-            // pulse length (in seconds) = (8 * data byte) / (clock cycles)
-            nsamples = Math.round((8 * byte * samplerate) / clock);
-        }
-        else {
-            // version 1 pulse
-            let cycles =
-                (data[i+1] << 0 )  |
-                (data[i+2] << 8 )  |
-                (data[i+3] << 16)  ;
-            i+=3;
-            Math.round(nsamples = (cycles * samplerate) / clock);
-        }
+    for(let i=0;i<cycles.length;i++) {
+        let nsamples = Math.round((cycles[i] * samplerate) / clock);
         for(let t=0;t<nsamples;t++) {
             if(t<nsamples/2) samples.push(volume);
             else             samples.push(-volume);
@@ -105,4 +65,3 @@ let wavfile = samples2wavfile(samples,samplerate);
 
 fs.writeFileSync(wavName, wavfile);
 console.log(`file "${wavName}" generated`);
-

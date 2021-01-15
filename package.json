@@ -1,6 +1,6 @@
 {
   "name": "commodore-tap-wav",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Utility for encoding/decoding WAV files into TAP files for the Commodore Computers (C64, VIC20 ecc..).",
   "main": "tap2wav.js",
   "dependencies": {
@@ -14,7 +14,8 @@
   },
   "bin": {
     "tap2wav": "./tap2wav.js",
-    "wav2tap": "./wav2tap.js"
+    "wav2tap": "./wav2tap.js",
+    "tapstat": "./tapstat.js"
   },
   "author": "Antonino Porcino <nino.porcino@gmail.com>",
   "license": "MIT",
