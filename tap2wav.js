@@ -8,29 +8,8 @@ const { getTapData, tapData2Cycles } = require("./tap");
 
 // turns the TAP data block into samples at the desideres samplerate
 // returns the array of float samples
-//
-function tap2wav(tapfile, samplerate, clock, invert) {
-    let data = getTapData(tapfile);
-    let cycles = tapData2Cycles(data);
 
-    let samples = [];
-    let volume = (invert === true) ? -0.75 : 0.75;
 
-    let ptr = 0;
-    for(let i=0;i<cycles.length;i++) {
-        let nsamples = cycles[i] * samplerate / clock;
-        while(ptr<nsamples) {
-            if(ptr<nsamples/2) samples.push(volume);
-            else               samples.push(-volume);
-            ptr++;
-        }
-        ptr-=nsamples;
-    }
-    return samples;
-}
-
-// simpler but less accurate version
-//
 // function tap2wav(tapfile, samplerate, clock, invert) {
 //     let data = getTapData(tapfile);
 //     let cycles = tapData2Cycles(data);
@@ -38,15 +17,36 @@ function tap2wav(tapfile, samplerate, clock, invert) {
 //     let samples = [];
 //     let volume = (invert === true) ? -0.75 : 0.75;
 //
+//     let ptr = 0;
 //     for(let i=0;i<cycles.length;i++) {
-//         let nsamples = Math.round((cycles[i] * samplerate) / clock);
-//         for(let t=0;t<nsamples;t++) {
-//             if(t<nsamples/2) samples.push(volume);
-//             else             samples.push(-volume);
+//         let nsamples = cycles[i] * samplerate / clock;
+//         while(ptr<nsamples) {
+//             if(ptr<nsamples/2) samples.push(volume);
+//             else               samples.push(-volume);
+//             ptr++;
 //         }
+//         ptr-=nsamples;
 //     }
 //     return samples;
 // }
+
+// simpler but less accurate version
+function tap2wav(tapfile, samplerate, clock, invert) {
+    let data = getTapData(tapfile);
+    let cycles = tapData2Cycles(data);
+
+    let samples = [];
+    let volume = (invert === true) ? -0.75 : 0.75;
+
+    for(let i=0;i<cycles.length;i++) {
+        let nsamples = Math.round((cycles[i] * samplerate) / clock);
+        for(let t=0;t<nsamples;t++) {
+            if(t<nsamples/2) samples.push(volume);
+            else             samples.push(-volume);
+        }
+    }
+    return samples;
+}
 
 // turns the samples into an actual WAV file
 // returns the array of bytes to be written to file
@@ -72,7 +72,7 @@ const options = parseOptions([
 if(options.input === undefined || options.output === undefined) {
     console.log("usage: tap2wav -i inputfile.tap -o outputfile.wav [-s samplerate] [-t target] [--invert]");
     console.log("         -s or --samplerate num  the samplerate of the output WAV file (44100 default)");
-    console.log("         -t or --target target   C64PAL (default");
+    console.log("         -t or --target target   {C64|VIC20|C16}{PAL|NTSC} (default C64PAL)");
     console.log("         --invert                inverts the polarity of the audio samples");
     process.exit(-1);
 }

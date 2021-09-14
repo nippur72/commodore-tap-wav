@@ -83,7 +83,7 @@ const options = parseOptions([
 
 if(options.input === undefined || options.output === undefined) {
     console.log("usage: wav2tap -i inputfile.wav -o outputfile.tap [-t target] [--invert]");
-    console.log("         -t or --target target   C64PAL (default");
+    console.log("         -t or --target target   {C64|VIC20|C16}{PAL|NTSC} (default C64PAL)");
     console.log("         --invert                inverts the polarity of the audio samples");
     process.exit(-1);
 }
